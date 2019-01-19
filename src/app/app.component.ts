@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import {MatDialog} from '@angular/material';
+import { AngularFireDatabase } from 'angularfire2/database';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -7,7 +9,9 @@ import {MatDialog} from '@angular/material';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  constructor(public dialog: MatDialog){}
+  items: Observable<any[]>;
+  
+  constructor(public dialog: MatDialog, public db: AngularFireDatabase){}
 
   openDialog() {
     const dialogRef = this.dialog.open(AppComponent, {
