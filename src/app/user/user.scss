@@ -1,3 +1,20 @@
-.image{
-  width: 100%
+.fill-remaining-space {
+  flex: 1 1 auto;
+}
+
+.mat-toolbar.mat-primary {
+  background: #0c1f3c;
+  color: #fff;
+}
+
+.logo-header img {
+  max-width: 280px;
+}
+
+.mat-toolbar-row {
+  padding: 40px 16px;
+}
+
+table {
+  width: 100%;
 }

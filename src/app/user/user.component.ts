@@ -1,54 +1,51 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../core/user.service';
+import { DatePipe } from '@angular/common'
+import * as moment from 'moment';
+import { NpsService } from '../core/nps.service';
 import { AuthService } from '../core/auth.service';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { FirebaseUserModel } from '../core/user.model';
 
 @Component({
   selector: 'page-user',
   templateUrl: 'user.component.html',
   styleUrls: ['user.scss']
 })
-export class UserComponent implements OnInit{
+export class UserComponent implements OnInit  {
 
-  user: FirebaseUserModel = new FirebaseUserModel();
-  profileForm: FormGroup;
+  displayedColumns: string[] = [
+    'ratingDate', 
+    'rate1', 
+    'rate2', 
+    'rate3', 
+    'rate4', 
+    'rate5', 
+    'detractor', 
+    'promoter',
+    'nps', 
+    'reserva'
+  ];
+  dataSource: any;
 
   constructor(
-    public userService: UserService,
+    public npsService: NpsService,
     public authService: AuthService,
     private route: ActivatedRoute,
-    private location : Location,
-    private fb: FormBuilder
+    private location : Location
   ) {
 
   }
 
-  ngOnInit(): void {
-    this.route.data.subscribe(routeData => {
-      let data = routeData['data'];
-      if (data) {
-        this.user = data;
-        this.createForm(this.user.name);
-      }
+  ngOnInit(){
+    this.npsService.getNpsList().subscribe(val => {
+      this.dataSource = val
     })
   }
 
-  createForm(name) {
-    this.profileForm = this.fb.group({
-      name: [name, Validators.required ]
-    });
+  stringToDate(date){
+    return moment(date, 'YYYY-MM-DD').toDate()
   }
-
-  save(value){
-    this.userService.updateCurrentUser(value)
-    .then(res => {
-      console.log(res);
-    }, err => console.log(err))
-  }
-
+  
   logout(){
     this.authService.doLogout()
     .then((res) => {
@@ -56,5 +53,17 @@ export class UserComponent implements OnInit{
     }, (error) => {
       console.log("Logout error", error);
     });
+  }
+
+  npsClassification(nps){
+    let clientCathegory;
+    if(nps<70){
+      clientCathegory = 'detractor'
+    }else if(nps>=70 && nps<90){
+      clientCathegory = 'passive'
+    }else{
+      clientCathegory = 'promoter'
+    }
+    return clientCathegory
   }
 }

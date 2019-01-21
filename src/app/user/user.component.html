@@ -1,25 +1,134 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-4 col-md-offset-4">
-      <div class="card" style="width: 20rem;">
-        <img class="card-img-top image" [src]="user.image" alt="Card image cap">
-        <div *ngIf='user.provider != "password"'class="card-body">
-          <h4 class="card-title">{{user.name}}</h4>
-          <p class="card-text">This is an example of Social Authentication using Firebase in an Angular 5 web app. </p>
-        </div>
-        <div *ngIf='user.provider == "password"'class="card-body">
-          <form [formGroup]="profileForm">
-            <div class="form-group">
-              <label>Your name</label>
-              <input type="text" formControlName="name" class="form-control" required>
-            </div>
-          </form>
-          <a (click)="save(profileForm.value)" class="btn btn-primary">Save</a>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <button type="button" (click)="logout()" class="btn btn-link">Logout</button>
-    </div>
-  </div>
-</div>
+<mat-toolbar color="primary">
+    <mat-toolbar-row>
+        <span class="logo-header"><img class="img-responsive" src="assets/logo-Turbi.png"></span>
+        <span class="fill-remaining-space"></span>
+        <span class="align-center"></span>
+        <span class="example-spacer"></span>
+        <!-- <span>
+            <mat-card-header>
+              <mat-card-title>Shiba Inu</mat-card-title>
+              <mat-card-subtitle>Dog Breed</mat-card-subtitle>
+            </mat-card-header>
+        </span> -->
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="logout()">
+              <mat-icon>exit_to_app</mat-icon>
+              <span>Logout</span>
+          </button>
+        </mat-menu>
+     </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-tab-group>
+  <mat-tab label="Marketing">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+      <ng-container matColumnDef="ratingDate">
+        <th mat-header-cell *matHeaderCellDef> Data Avaliação </th>
+        <td mat-cell *matCellDef="let element"> {{stringToDate(element.ratingDate) | date:'dd/MM/yyyy'}} </td>
+      </ng-container>
+    
+      <ng-container matColumnDef="rate1">
+        <th mat-header-cell *matHeaderCellDef> Avaliação 1 </th>
+        <td mat-cell *matCellDef="let element"> 
+          <bar-rating [(rate)]="element.rate1" [max]="5"></bar-rating>
+        </td>
+      </ng-container>
+    
+      <ng-container matColumnDef="rate2">
+        <th mat-header-cell *matHeaderCellDef> Avaliação 2 </th>
+        <td mat-cell *matCellDef="let element"> 
+            <bar-rating [(rate)]="element.rate2" [max]="5"></bar-rating>
+        </td>
+      </ng-container>
+    
+      <ng-container matColumnDef="rate3">
+        <th mat-header-cell *matHeaderCellDef> Avaliação 3 </th>
+        <td mat-cell *matCellDef="let element"> 
+            <bar-rating [(rate)]="element.rate3" [max]="5"></bar-rating>
+        </td>
+      </ng-container>
+    
+      <ng-container matColumnDef="rate4">
+        <th mat-header-cell *matHeaderCellDef> Avaliação 4 </th>
+        <td mat-cell *matCellDef="let element"> 
+            <bar-rating [(rate)]="element.rate4" [max]="5"></bar-rating>
+        </td>
+      </ng-container>
+    
+      <ng-container matColumnDef="rate5">
+        <th mat-header-cell *matHeaderCellDef> Avaliação 5 </th>
+        <td mat-cell *matCellDef="let element"> 
+          <bar-rating [(rate)]="element.rate5" [max]="5"></bar-rating>
+        </td>
+      </ng-container>
+    
+      <ng-container matColumnDef="detractor">
+        <th mat-header-cell *matHeaderCellDef> Detractor </th>
+        <td mat-cell *matCellDef="let element"> {{element.detractor}} </td>
+      </ng-container>
+    
+      <ng-container matColumnDef="promoter">
+        <th mat-header-cell *matHeaderCellDef> Promoter </th>
+        <td mat-cell *matCellDef="let element"> {{element.promoter}} </td>
+      </ng-container>
+    
+      <ng-container matColumnDef="nps">
+        <th mat-header-cell *matHeaderCellDef> NPS </th>
+        <td mat-cell *matCellDef="let element"> 
+            <button mat-raised-button 
+                color="{{npsClassification(element.nps)== 'promoter' ? 'primary' : npsClassification(element.nps)== 'detractor' ? 'warn' : 'default' }}" 
+                matBadge="{{element.nps}}" matBadgePosition="before" matBadgeColor="accent">
+                {{npsClassification(element.nps)}}
+            </button>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="reserva">
+          <th mat-header-cell *matHeaderCellDef> Motivos </th>
+          <td mat-cell *matCellDef="let element"> 
+            <p *ngIf="element.Reserva>0">
+              <span matBadge="{{element.Reserva}}" matBadgeOverlap="false">Reserva</span>
+            </p>
+            
+            <p *ngIf="element.Abertura>0">
+              <span matBadge="{{element.Abertura}}" matBadgeOverlap="false">Abertura</span>
+            </p>
+            
+            <p *ngIf="element.Finalizar>0">
+              <span matBadge="{{element.Finalizar}}" matBadgeOverlap="false">Finalizar</span>
+            </p>
+            
+            <p *ngIf="element.VeiculoSujo>0">
+              <span matBadge="{{element.VeiculoSujo}}" matBadgeOverlap="false">Veiculo Sujo</span>
+            </p>
+            
+            <p *ngIf="element.Abastecimento>0">
+              <span matBadge="{{element.Abastecimento}}" matBadgeOverlap="false">Abastecimento</span>
+            </p>
+            
+            <p *ngIf="element.CheiroCigarro>0">
+              <span matBadge="{{element.CheiroCigarro}}" matBadgeOverlap="false">Cheiro Cigarro</span>
+            </p>
+            
+            <p *ngIf="element.VagaRuim>0">
+              <span matBadge="{{element.VagaRuim}}" matBadgeOverlap="false">Vaga Ruim</span>
+            </p>
+            
+            <p *ngIf="element.Outro>0">
+              <span matBadge="{{element.Outro}}" matBadgeOverlap="false">Outro</span>
+            </p>
+          </td>
+        </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </mat-tab>
+  <mat-tab label="Operação"> Operação </mat-tab>
+  <mat-tab label="Reservas"> Reservas </mat-tab>
+  <mat-tab label="Performance"> Performance </mat-tab>
+  <mat-tab label="Setup"> Setup </mat-tab>
+</mat-tab-group>
