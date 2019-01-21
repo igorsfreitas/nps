@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatDialogModule} from '@angular/material/dialog';
 import { NgModule } from '@angular/core';
@@ -11,6 +12,7 @@ import { RouterModule } from '@angular/router';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireAuthModule } from 'angularfire2/auth';
+import { BarRatingModule } from "ngx-bar-rating";
 import { environment } from '../environments/environment';
 import { LoginComponent } from './login/login.component';
 import { UserComponent } from './user/user.component';
@@ -18,8 +20,10 @@ import { UserResolver } from './user/user.resolver';
 import { AuthGuard } from './core/auth.guard';
 import { AuthService } from './core/auth.service';
 import { UserService } from './core/user.service';
+import { NpsService } from './core/nps.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AngularFireDatabase } from 'angularfire2/database';
+import { CustomMaterialModule } from './core/material.module';
 
 export const firebaseConfig = {
   apiKey: "AIzaSyBnu3vGZ_0jnayTq-2flezNJB9tClljOes",
@@ -38,6 +42,7 @@ export const firebaseConfig = {
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     BrowserAnimationsModule,
     MatDialogModule,
     AppRoutingModule,
@@ -45,9 +50,11 @@ export const firebaseConfig = {
     AngularFireAuthModule,
     AngularFireModule.initializeApp(firebaseConfig),
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    CustomMaterialModule,
+    BarRatingModule
   ],
-  providers: [AuthService, UserService, UserResolver, AuthGuard, AngularFireDatabase],
+  providers: [AuthService, UserService, NpsService, UserResolver, AuthGuard, AngularFireDatabase],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
